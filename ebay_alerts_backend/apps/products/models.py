@@ -2,10 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import JSONField
 
-from alerts.models import ProductAlert
+from apps.alerts.models import ProductAlert
 
 
 class ProductList(models.Model):
+    """
+        Model to save products list for a search phrase from ebay
+    """
     alert = models.ForeignKey(ProductAlert, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     product_json = JSONField(null=True)

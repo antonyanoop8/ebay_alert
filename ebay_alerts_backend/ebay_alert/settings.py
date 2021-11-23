@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     "corsheaders",
     'django_celery_beat',
     'django_celery_results',
-    'alerts',
-    'products'
+    'apps.alerts',
+    'apps.products'
 ]
 
 MIDDLEWARE = [
@@ -148,20 +148,34 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_RESULT_BACKEND = "django-db"
-CELERY_BROKER_URL = "redis://redis:6379"
-CELERY_RESULT_BACKEND = "redis://redis:6379"
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
+CELERY_CREATE_MISSING_QUEUES = True
+# CELERY_ROUTES = {
+#     'apps.alerts.tasks.fetch_product_prices_from_ebay': {'queue': 'ebay'}
+# }
 
-EBAY_APP_ID = "AnoopAnt-PriceAle-SBX-62cd27827-edd4db94"
-EBAY_DEV_ID = "fa8bfcfb-691e-415d-89b6-dd375f3f4dd4"
-EBAY_CLIENT_SECRET = "SBX-2cd278278115-4396-4e59-afcf-1dce"
+EBAY_APP_ID = 'AnoopAnt-PriceAle-SBX-62cd27827-edd4db94'
+EBAY_DEV_ID = 'fa8bfcfb-691e-415d-89b6-dd375f3f4dd4'
+EBAY_CLIENT_SECRET = 'SBX-2cd278278115-4396-4e59-afcf-1dce'
 
-SENDGRID_API_KEY = "SG.GdljZeeuTVuSBVEl3MqBAQ.Ij3mjoe0MdIWHpI96lljpvSs1Ds5BpUHVG1wv03gPu0"
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+#Sendgrid Settings
+# SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+# EMAIL_HOST = os.environ.get('EMAIL_HOST')
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER') # this is exactly the value 'apikey'
+# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+# EMAIL_PORT = os.environ.get('EMAIL_PORT')
+# EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+
+#Gmail settings
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 REST_FRAMEWORK = { 
     'DEFAULT_AUTHENTICATION_CLASSES': [

@@ -3,7 +3,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from products.models import ProductList
+from .models import ProductList
 from .utils import refactor_product_data_for_phase2
 
 

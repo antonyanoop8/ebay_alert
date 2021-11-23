@@ -3,10 +3,10 @@ import os
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
-from celery.schedules import crontab
+# from celery.schedules import crontab
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "EbayApp.settings")
-BASE_REDIS_URL = os.environ.get('REDIS_URL', 'redis://redis:6379')
+# BASE_REDIS_URL = os.environ.get('REDIS_URL', 'redis://redis:6379')
 
 app = Celery("EbayApp")
 
@@ -15,13 +15,14 @@ app = Celery("EbayApp")
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
 app.config_from_object("django.conf:settings", namespace="CELERY")
-app.conf.broker_url = BASE_REDIS_URL
+# app.conf.broker_url = BASE_REDIS_URL
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
-
+app.conf.timezone = 'UTC'
+app.conf.task_routes = {'apps.analytics.tasks.*': {'queue': 'insights'}}
 app.conf.beat_schedule = {
     "collect_users_for_insights":{
         "task": "apps.analytics.tasks.collect_users_data",
-        "schedule": crontab(minute=1),
-}
+        "schedule": 60,
+    }
 }

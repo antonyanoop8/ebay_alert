@@ -6,11 +6,14 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django_enum_choices.fields import EnumChoiceField
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
-from alerts.enums import TimeInterval, SetupStatus
+from apps.alerts.enums import TimeInterval, SetupStatus
 from django.contrib.auth.models import User
 
 
 class ProductAlert(models.Model):
+    """
+        Model to save user alerts
+    """
     title = models.CharField(max_length=70, blank=False)
     status = EnumChoiceField(SetupStatus, default=SetupStatus.active)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -35,6 +38,9 @@ class ProductAlert(models.Model):
         return self.title
     
     def setup_task(self):
+        """
+            function creates periodic task to run for created alert
+        """
         self.task = PeriodicTask.objects.create(
             name=self.title,
             task='fetch_product_prices_from_ebay',
@@ -46,6 +52,9 @@ class ProductAlert(models.Model):
     
     @property
     def interval_schedule(self):
+        """
+            function to create or fetch time intervals for 2, 10 and 30 minutes 
+        """
         if self.time_interval == TimeInterval.two_mins:
             interval_schedule, created = IntervalSchedule.objects.get_or_create(every=2, period='minutes')
             return interval_schedule

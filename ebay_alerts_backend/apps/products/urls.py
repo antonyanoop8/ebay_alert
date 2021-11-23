@@ -1,5 +1,5 @@
 from django.urls import path, include
-from products import views
+from apps.products import views
 
 
 

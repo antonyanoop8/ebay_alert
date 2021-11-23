@@ -91,14 +91,30 @@ services:
     build:
       context: ./insights_app/
       dockerfile: Dockerfile
-    command: celery -A EbayApp worker -l INFO
+    # command: sh celery-scripts/docker_celery.sh
+    command: celery -A EbayApp worker -l INFO -Q insights
     volumes:
       - ./app:/app
     env_file:
       - ./insights_app/.env.insights
     depends_on:
-      - db
       - redis
+      - db
+      - insights
+    networks:
+      - db-net
+  celery_beat:
+    build:
+      context: ./insights_app/
+      dockerfile: Dockerfile
+    command: celery -A EbayApp beat -l info
+    volumes:
+      - ./app:/app
+    env_file:
+      - ./insights_app/.env.insights
+    depends_on:
+      - redis
+      - db
       - insights
     networks:
       - db-net

@@ -135,7 +135,7 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-USER_APP_URL = "http://31b8-202-164-136-31.ngrok.io"
+USER_APP_URL = "http://app:8000/"
 PRICE_DROP_THRESHOLD = 0
 INSIGHT_DAYS = 4
 LOGGING = {
@@ -151,16 +151,29 @@ LOGGING = {
         "level": "INFO",
     },
 }
-#
-# SENDGRID_API_KEY = "SG.GdljZeeuTVuSBVEl3MqBAQ.Ij3mjoe0MdIWHpI96lljpvSs1Ds5BpUHVG1wv03gPu0"
-# EMAIL_HOST = 'smtp.sendgrid.net'
-# EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
-# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
 
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = 'eb14d6dead676e'
-EMAIL_HOST_PASSWORD = 'beecf59b49397f'
-EMAIL_PORT = '2525'
-DEFAULT_FROM_EMAIL="antonyanoop8@gmail.com"
+#Sendgrid Settings
+# SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+# EMAIL_HOST = os.environ.get('EMAIL_HOST')
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER') # this is exactly the value 'apikey'
+# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+# EMAIL_PORT = os.environ.get('EMAIL_PORT')
+# EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+
+
+
+#Gmail settings
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+
+# CELERY_ROUTES = {
+#     'apps.analytics.tasks.*': {'queue': 'insights'}
+# }
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
+CELERY_CREATE_MISSING_QUEUES = True

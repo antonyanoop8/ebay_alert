@@ -8,8 +8,8 @@ def refactor_product_data_for_phase2(products):
             data.append({
                 "product_name": ebay_data["title"],
                 "created_date": product.created_at.strftime("%y/%m/%d"),
-                "itemid": ebay_data["itemId"],
-                "price": ebay_data["sellingStatus"]["currentPrice"]["value"]
+                "item_id": ebay_data["itemId"],
+                "price": float(ebay_data["sellingStatus"]["currentPrice"]["value"])
             })
     print(type(data))
     return data

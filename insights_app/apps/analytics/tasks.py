@@ -14,21 +14,21 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task
-def send_insights_to_user(mail: str,  data: list[dict[str, Union[float, str]]]) -> None:
+def send_insights_to_user(mail,  data):
 
     mail_template = "mails/insights.html"
     mail_body = render_to_string(mail_template, context={"data": data})
-    send_mail(subject="Ebay alerts", message="",html_message=mail_body, from_email=None, recipient_list=[mail])
+    send_mail(subject="Ebay insights alerts", message="",html_message=mail_body, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[mail])
 
 
 @shared_task
-def generate_insights_for_user(user_email: str) -> None:
+def generate_insights_for_user(user_email):
 
-    logger.info(f"Generating insights for {user_email=}")
-    resp = get_data(f"/products/?email={user_email}&no_of_days={settings.INSIGHT_DAYS}")
+    logger.info(f"Generating insights for {user_email}")
+    resp = get_data(f"products/?email={user_email}&no_of_days={settings.INSIGHT_DAYS}")
 
     if not resp:
-        logger.info(f"No data found for {user_email=}")
+        logger.info(f"No data found for {user_email}")
         return
 
     data = DataFrame(resp)
@@ -51,12 +51,12 @@ def generate_insights_for_user(user_email: str) -> None:
     if product_info:
         # call celery task to call send mail
         send_insights_to_user.delay(user_email, product_info)
-        logger.info(f"sending product insights to {user_email=}, with products:{product_info}")
+        logger.info(f"sending product insights to {user_email}, with products:{product_info}")
 
 
 @shared_task
-def collect_users_data() -> None:
-    resp = get_data("/alerts/user-emails")
+def collect_users_data():
+    resp = get_data("alerts/user-emails")
     for email in resp:
         generate_insights_for_user.delay(email.get("email"))
 

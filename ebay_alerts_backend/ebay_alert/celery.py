@@ -16,5 +16,6 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.conf.broker_url = BASE_REDIS_URL
 app.autodiscover_tasks()
+
 # this allows you to schedule items in the Django admin.
 app.conf.beat_scheduler = 'django_celery_beat.schedulers.DatabaseScheduler'

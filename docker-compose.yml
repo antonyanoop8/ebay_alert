@@ -98,15 +98,10 @@ services:
       - ./insights_app/.env.insights
     depends_on:
       - db
-      - rabbit
+      - redis
       - insights
     networks:
       - db-net
-  rabbit:
-    image: "rabbitmq:3-management-alpine"
-    ports:
-    - "5672:5672"
-    restart: on-failure
 volumes:
   pgdata:
 networks:

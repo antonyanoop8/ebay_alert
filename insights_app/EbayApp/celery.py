@@ -6,6 +6,7 @@ from celery import Celery
 from celery.schedules import crontab
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "EbayApp.settings")
+BASE_REDIS_URL = os.environ.get('REDIS_URL', 'redis://redis:6379')
 
 app = Celery("EbayApp")
 
@@ -14,7 +15,7 @@ app = Celery("EbayApp")
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
 app.config_from_object("django.conf:settings", namespace="CELERY")
-
+app.conf.broker_url = BASE_REDIS_URL
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 

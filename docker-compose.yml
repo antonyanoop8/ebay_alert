@@ -2,43 +2,118 @@ services:
   app:
     restart: always
     build:
-      context: .
+      context: ./ebay_alerts_backend/
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - .:/code
+      - .:/code/ebay_alerts_backend
     command: >
       sh -c "python3 manage.py migrate &&
              python3 manage.py wait_for_db &&
              python3 manage.py runserver 0.0.0.0:8000"
  
     env_file:
-      - ./.env.dev
+      - ./ebay_alerts_backend/.env.ebay
     depends_on:
       - db
- 
+    networks:
+      - db-net
   db:
     image: postgres:10-alpine
     env_file:
-      - ./.env.dev
+      - ./ebay_alerts_backend/.env.ebay
     volumes: 
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - db-net
+    ports:
+      - "5432:5432"
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
+    networks:
+      - db-net
   celery:
     restart: always
     build:
-      context: .
+      context: ./ebay_alerts_backend/
+      dockerfile: Dockerfile
     command: celery -A ebay_alert worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - ./app:/app
     env_file:
-      - ./.env.dev
+      - ./ebay_alerts_backend/.env.ebay
     depends_on:
       - db
       - redis
       - app
+    networks:
+      - db-net
+  frontend:
+    restart: always
+    command : yarn start
+    container_name: front
+    build:
+      context: ./ebay_alerts_frontend/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    depends_on:
+      - app
+    networks:
+      - db-net
+  insights:
+    restart: always
+    build:
+      context: ./insights_app/
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/code/insights_app
+    command: >
+      sh -c "python3 manage.py migrate &&
+             python3 manage.py wait_for_db &&
+             python3 manage.py runserver 0.0.0.0:8001"
+ 
+    env_file:
+      - ./insights_app/.env.insights
+    depends_on:
+      - insights_db
+    networks:
+      - db-net
+  insights_db:
+    image: postgres:10-alpine
+    env_file:
+      - ./insights_app/.env.insights
+    volumes: 
+      - pgdata2:/var/lib/postgresql/data
+    networks:
+      - db-net
+    ports:
+      - "5433:5432"
+  insights_celery:
+    restart: always
+    build:
+      context: ./insights_app/
+      dockerfile: Dockerfile
+    command: celery -A EbayApp worker -l INFO
+    volumes:
+      - ./app:/app
+    env_file:
+      - ./insights_app/.env.insights
+    depends_on:
+      - insights_db
+      - redis
+      - insights
+    networks:
+      - db-net
 volumes:
   pgdata:
+  pgdata2:
+networks:
+  db-net:
+    driver: bridge

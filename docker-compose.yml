@@ -1,3 +1,4 @@
+version: "3.7"
 services:
   app:
     restart: always
@@ -20,21 +21,21 @@ services:
     networks:
       - db-net
   db:
-    image: postgres:10-alpine
-    env_file:
-      - ./ebay_alerts_backend/.env.ebay
-    volumes: 
-      - pgdata:/var/lib/postgresql/data
+    image: "postgres:10-alpine"
+    volumes:
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_MULTIPLE_DATABASES=app,app_test 
     networks:
       - db-net
-    ports:
-      - "5432:5432"
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
     networks:
-      - db-net
+      - db-net          
   celery:
     restart: always
     build:
@@ -82,19 +83,9 @@ services:
     env_file:
       - ./insights_app/.env.insights
     depends_on:
-      - insights_db
+      - db
     networks:
       - db-net
-  insights_db:
-    image: postgres:10-alpine
-    env_file:
-      - ./insights_app/.env.insights
-    volumes: 
-      - pgdata2:/var/lib/postgresql/data
-    networks:
-      - db-net
-    ports:
-      - "5433:5432"
   insights_celery:
     restart: always
     build:
@@ -106,14 +97,18 @@ services:
     env_file:
       - ./insights_app/.env.insights
     depends_on:
-      - insights_db
-      - redis
+      - db
+      - rabbit
       - insights
     networks:
       - db-net
+  rabbit:
+    image: "rabbitmq:3-management-alpine"
+    ports:
+    - "5672:5672"
+    restart: on-failure
 volumes:
   pgdata:
-  pgdata2:
 networks:
   db-net:
     driver: bridge

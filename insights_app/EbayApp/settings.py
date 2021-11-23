@@ -164,3 +164,5 @@ EMAIL_HOST_USER = 'eb14d6dead676e'
 EMAIL_HOST_PASSWORD = 'beecf59b49397f'
 EMAIL_PORT = '2525'
 DEFAULT_FROM_EMAIL="antonyanoop8@gmail.com"
+
+# CELERY_BROKER_URL = 'amqp://guest:guest@rabbit:5672/'

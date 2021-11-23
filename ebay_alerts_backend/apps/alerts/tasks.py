@@ -25,13 +25,13 @@ def fetch_product_prices_from_ebay(alert_id):
         )
         print(cheapest_price_products)
         product = ProductList.objects.create(alert=product_alert, product_json=json.dumps(cheapest_price_products[:20]))
-        # mail_template = "mails/products.html"
-        # mail_body = render_to_string(mail_template, context={"data": cheapest_price_products})
-        # send_mail(
-        #     subject="Ebay alerts", message="",
-        #     html_message=mail_body, from_email=settings.DEFAULT_FROM_EMAIL, 
-        #     recipient_list=[product_alert.email]
-        #     )
+        mail_template = "mails/products.html"
+        mail_body = render_to_string(mail_template, context={"data": cheapest_price_products})
+        send_mail(
+            subject="Ebay alerts", message="",
+            html_message=mail_body, from_email=settings.DEFAULT_FROM_EMAIL, 
+            recipient_list=[product_alert.email]
+            )
     except ConnectionError as e:
         print(e)
         print(e.response.dict())

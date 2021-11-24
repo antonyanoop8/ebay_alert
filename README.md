@@ -8,7 +8,7 @@ Ebay Alerts
 
 ## Installation
 
-- Please make sure to add ur own keys in the env files (.env.insights & .env.ebay)
+- Please make sure to add your own keys in the env files (.env.insights & .env.ebay), the required fields are added to these files, please add correct values to it.
 - Build the project on local machine by `docker-compose build` for the first time
 - Run `docker-compose up` to start the server
 - Create superuser. `docker exec -it ebay_alert_app_1 python manage.py createsuperuser`
@@ -29,6 +29,8 @@ There are 3 projects in this repo. All these projects run inside a single docker
 
 
 API documentation for Phase 1 can be accessed through `http://127.0.0.1:8000/docs/`
+
+I have added my own ebay API key, I couldn't add the sendgrid key for emails as my sendgrid account seems to have some issues, please add your own so to test the emails.
 
 
 

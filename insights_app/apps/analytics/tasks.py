@@ -35,10 +35,10 @@ def generate_insights_for_user(user_email):
     data['created_date'] = to_datetime(data['created_date'], format="%y/%m/%d")
     # group by item_id
     grouped_df = data.groupby("item_id", sort=True)
-    product_info: list[dict[str, Union[float, str]]] = []
+    product_info = []
 
     for idx, df in grouped_df:
-
+        #code to find drop in price
         sorted_df = df.sort_values(by=['created_date'])
         historical_price_avg = sorted_df[:-1]['price'].mean()
         latest_product_df = sorted_df[-1:].iloc[0]

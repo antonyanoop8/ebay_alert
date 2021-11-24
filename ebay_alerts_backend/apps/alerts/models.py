@@ -14,7 +14,7 @@ class ProductAlert(models.Model):
     """
         Model to save user alerts
     """
-    title = models.CharField(max_length=70, blank=False)
+    title = models.CharField(max_length=70, blank=False, unique=True)
     status = EnumChoiceField(SetupStatus, default=SetupStatus.active)
     created_at = models.DateTimeField(auto_now_add=True)
     time_interval = EnumChoiceField(

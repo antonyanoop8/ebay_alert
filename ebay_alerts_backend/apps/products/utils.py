@@ -1,4 +1,8 @@
+import logging
 import json
+
+logger = logging.getLogger(__name__)
+
 
 def refactor_product_data_for_phase2(products):
     data = []
@@ -11,5 +15,5 @@ def refactor_product_data_for_phase2(products):
                 "item_id": ebay_data["itemId"],
                 "price": float(ebay_data["sellingStatus"]["currentPrice"]["value"])
             })
-    print(type(data))
+    logger.info(f"product list  = {data}")
     return data

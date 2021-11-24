@@ -185,3 +185,19 @@ REST_FRAMEWORK = {
     }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
+
+USE_PROD_EBAY = os.environ.get('USE_PROD_EBAY', False)

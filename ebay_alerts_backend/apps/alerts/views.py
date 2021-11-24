@@ -1,8 +1,5 @@
-from django.shortcuts import render
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework import viewsets
 
 from .serializers import AlertSerializer, UserEmailSerializer
@@ -17,6 +14,9 @@ class UserPriceAlertView(viewsets.ModelViewSet):
 
 
 class UserEmailListView(APIView):
+    """
+        API to fetch all emails from phase1 to phase2
+    """
     def get(self, request, format=None):
         emails = ProductAlert.objects.all()
         serializer = UserEmailSerializer(emails, many=True)

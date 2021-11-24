@@ -1,4 +1,3 @@
-from django.db.models.fields import EmailField
 from rest_framework import serializers
 
 from .models import ProductAlert

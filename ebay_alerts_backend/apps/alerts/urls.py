@@ -6,7 +6,6 @@ from apps.alerts import views
 router = DefaultRouter()
 router.register(r'', views.UserPriceAlertView)
 
-# The API URLs are now determined automatically by the router.
 urlpatterns = [
     path('', include(router.urls)),
     path('user-emails', views.UserEmailListView.as_view(), name="user-emails-list")
